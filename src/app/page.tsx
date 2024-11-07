@@ -9,7 +9,7 @@ import { shuffleArray } from '../utils/shuffleArray';
 const HomePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [items, setItems] = useState<{ name: string; number: number }[]>([]);
-  const [showFinalNumbers, setShowFinalNumbers] = useState(false);
+  const [, setShowFinalNumbers] = useState(false);
 
   const generateRandomNames = async () => {
     setIsLoading(true);
