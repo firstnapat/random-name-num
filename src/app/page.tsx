@@ -62,14 +62,14 @@ const HomePage = () => {
       >
         {isLoading ? "Loading..." : "Randomize"}
       </button>
-      <div className="grid w-full px-2 gap-2 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-10">
+      <div className="grid w-full px-2 gap-2 sm:px-4 sm:gap-3 grid-cols-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10">
         {items.map((item, index) => (
           <div
             key={index}
             className="bg-purple-600 text-white w-full h-24 flex flex-col items-center justify-center rounded-md shadow-md text-center"
           >
-            <span className="text-sm font-semibold">{item.name}</span>
-            <span className="text-lg font-bold">{item.number}</span>
+            <span className="text-xs sm:text-sm md:text-base font-semibold">{item.name}</span>
+            <span className="text-sm sm:text-lg font-bold">{item.number}</span>
           </div>
         ))}
       </div>
