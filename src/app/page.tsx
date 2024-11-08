@@ -10,26 +10,36 @@ const HomePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [items, setItems] = useState<{ name: string; number: number }[]>([]);
   const [, setShowFinalNumbers] = useState(false);
+  const [warning, setWarning] = useState<string | null>(null);  // State to hold warning message
 
   const generateRandomNames = async () => {
     setIsLoading(true);
     setShowFinalNumbers(false);
+    setWarning(null);  // Reset warning message on each click
 
+    // Fetch data from the Google Sheet
     const sampleNames = await fetchData();
-    if (sampleNames.length < 250) {
-      alert("Not enough data in the sheet. Please add more rows.");
+
+    // If no data, show warning and log to console
+    if (sampleNames.length < 1) {
+      console.warn("No data available: Please ensure the Google Sheet contains at least 1 row of data.");
+      setWarning("No data available. Please ensure the data source contains at least 1 row.");
       setIsLoading(false);
       return;
     }
 
-    const shuffledNumbers = shuffleArray(Array.from({ length: 250 }, (_, i) => i + 1));
-    const initialItems = sampleNames.slice(0, 250).map((name) => ({
+    // Ensure at least 1 row of data is available, even if less than 250
+    const effectiveData = sampleNames.length < 250 ? sampleNames : sampleNames.slice(0, 250);
+    const shuffledNumbers = shuffleArray(Array.from({ length: effectiveData.length }, (_, i) => i + 1));
+
+    const initialItems = effectiveData.map((name) => ({
       name,
       number: Math.floor(Math.random() * 250) + 1,
     }));
 
     setItems(initialItems);
 
+    // Rolling Effect: Change numbers every 100ms for shuffling animation
     const interval = setInterval(() => {
       setItems((currentItems) =>
         currentItems.map((item) => ({
@@ -39,9 +49,10 @@ const HomePage = () => {
       );
     }, 100);
 
+    // Stop rolling effect after 3 seconds and show final numbers
     setTimeout(() => {
       clearInterval(interval);
-      const finalItems = sampleNames.slice(0, 250).map((name, index) => ({
+      const finalItems = effectiveData.map((name, index) => ({
         name,
         number: shuffledNumbers[index],
       }));
@@ -62,6 +73,7 @@ const HomePage = () => {
       >
         {isLoading ? "Loading..." : "Randomize"}
       </button>
+      {warning && <div className="text-red-600 font-semibold mb-4">{warning}</div>} {/* Display warning if set */}
       <div className="grid w-full px-2 gap-2 sm:px-4 sm:gap-3 grid-cols-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10">
         {items.map((item, index) => (
           <div
